@@ -1,0 +1,21 @@
+# Cargo.toml
+cargo-features = ["edition2024"]
+
+[package]
+name = "rustoku"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["tui"]
+tui = ["dep:ratatui"]
+
+[dependencies]
+# Shared dependencies used by all variants
+serde = { version = "1.0", features = ["derive"] }
+ratatui = { version = "0.28.1", optional = true }
+rand = "0.8"
+
+[[bin]]
+name = "rustoku"
+path = "src/main.rs"
