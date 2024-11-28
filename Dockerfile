@@ -9,7 +9,7 @@ RUN rustup update nightly && \
     rm -rf /var/lib/apt/lists/*
 
 # Create a new empty shell project
-WORKDIR /usr/src/rustoku
+WORKDIR /usr/src/app
 
 # Copy only the files needed for build
 COPY --link Cargo.toml Cargo.lock ./
@@ -19,7 +19,7 @@ RUN cargo fetch && \
     mkdir src && \
     echo 'fn main() {}' > src/main.rs && \
     cargo build --release --features tui && \
-    rm -rf src/*.rs target/release/deps/rustoku*
+    rm -rf src/*.rs target/release/deps/nutrient_calculator*
 
 COPY --link src ./src
 
@@ -42,10 +42,10 @@ RUN groupadd -r nonroot && useradd --no-log-init -r -g nonroot nonroot
 USER nonroot:nonroot
 
 # Copy only the binary using --link for better layer caching
-COPY --link --chmod=555 --chown=nonroot:nonroot --from=builder /usr/src/rustoku/target/release/rustoku /usr/local/bin/
+COPY --link --chmod=555 --chown=nonroot:nonroot --from=builder /usr/src/app/target/release/nutrient_calculator /usr/local/bin/
 
 # Specify that this is a tui app that needs a terminal
 ENV TERM=xterm-256color
 
 # Set the entrypoint
-CMD ["/usr/local/bin/rustoku"]
+CMD ["/usr/local/bin/nutrient_calculator"]
