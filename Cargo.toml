@@ -15,6 +15,7 @@ tui = ["dep:ratatui"]
 serde = { version = "1.0", features = ["derive"] }
 ratatui = { version = "0.28.1", optional = true }
 rand = "0.8"
+uom = "0.36.0"
 
 [[bin]]
 name = "nutrient_calculator"
