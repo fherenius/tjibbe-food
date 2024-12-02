@@ -1,6 +1,3 @@
-use uom::si::energy::kilocalorie;
-use uom::si::mass::kilogram;
-
 pub enum Age {
     Puppy,
     Adult,
@@ -17,10 +14,6 @@ pub enum ActivityLevel {
 
 pub struct Inputs {
     age: Age,
-    weight: kilogram,
+    weight: f32,
     activity_level: ActivityLevel,
-}
-
-pub struct Output {
-    daily_kcal: kilocalorie,
 }
