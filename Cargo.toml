@@ -3,20 +3,36 @@ cargo-features = ["edition2024"]
 
 [package]
 name = "nutrient_calculator"
+authors = ["Fester Herenius <me@festerherenius.nl>"]
 version = "0.1.0"
 edition = "2024"
 
 [features]
-default = ["tui"]
-tui = ["dep:ratatui"]
+default = ["web"]
+web = ["dioxus/web"]
+desktop = ["dioxus/desktop"]
+mobile = ["dioxus/mobile"]
 
 [dependencies]
 # Shared dependencies used by all variants
 serde = { version = "1.0", features = ["derive"] }
-ratatui = { version = "0.28.1", optional = true }
 rand = "0.8"
 uom = "0.36.0"
+dioxus = { version = "0.6.0", features = ["router"] }
+getrandom = { version = "0.2", features = ["js"] }
 
 [[bin]]
 name = "nutrient_calculator"
 path = "src/main.rs"
+
+[profile]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
