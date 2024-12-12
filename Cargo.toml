@@ -20,6 +20,7 @@ rand = "0.8"
 uom = "0.36.0"
 dioxus = { version = "0.6.0", features = ["router"] }
 getrandom = { version = "0.2", features = ["js"] }
+strum = { version = "0.26.3", features = ["derive"] }
 
 [[bin]]
 name = "nutrient_calculator"

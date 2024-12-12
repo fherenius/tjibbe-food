@@ -1,8 +1,9 @@
 mod backend;
-mod frontend;
 mod shared;
 
 use dioxus::prelude::*;
+use shared::types::{ActivityLevel, Age};
+use strum::IntoEnumIterator;
 
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
@@ -10,13 +11,12 @@ enum Route {
     #[layout(Navbar)]
     #[route("/")]
     Home {},
-    #[route("/blog/:id")]
-    Blog { id: i32 },
+    #[route("/calculator")]
+    Calculator {},
 }
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
-const HEADER_SVG: Asset = asset!("/assets/header.svg");
 const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
 fn main() {
@@ -37,15 +37,6 @@ pub fn Hero() -> Element {
     rsx! {
         div {
             id: "hero",
-            img { src: HEADER_SVG, id: "header" }
-            div { id: "links",
-                a { href: "https://dioxuslabs.com/learn/0.6/", "📚 Learn Dioxus" }
-                a { href: "https://dioxuslabs.com/awesome", "🚀 Awesome Dioxus" }
-                a { href: "https://github.com/dioxus-community/", "📡 Community Libraries" }
-                a { href: "https://github.com/DioxusLabs/sdk", "⚙️ Dioxus Development Kit" }
-                a { href: "https://marketplace.visualstudio.com/items?itemName=DioxusLabs.dioxus", "💫 VSCode Extension" }
-                a { href: "https://discord.gg/XgGxMSkvUM", "👋 Community Discord" }
-            }
         }
     }
 }
@@ -61,24 +52,48 @@ fn Home() -> Element {
 
 /// Blog page
 #[component]
-pub fn Blog(id: i32) -> Element {
+pub fn Calculator() -> Element {
+    let mut selected = use_signal(|| false);
     rsx! {
         div {
-            id: "blog",
+            id: "calculator",
 
             // Content
-            h1 { "This is blog #{id}!" }
-            p { "In blog #{id}, we show how the Dioxus router works and how URL parameters can be passed as props to our route components." }
+            h1 { "This is a calculator" }
+            EnumInputComponent {}
+        }
+    }
+}
 
-            // Navigation links
-            Link {
-                to: Route::Blog { id: id - 1 },
-                "Previous"
-            }
-            span { " <---> " }
-            Link {
-                to: Route::Blog { id: id + 1 },
-                "Next"
+#[component]
+fn EnumInputComponent() -> Element {
+    let mut age = use_signal(|| Age::Puppy);
+    let mut activity_level = use_signal(|| ActivityLevel::Sedentary);
+    let mut weight_kg = use_signal(|| 0);
+
+    rsx! {
+        div {
+            div {
+                "First Enum: {age()}",
+                div {
+                    {Age::iter().map(|variant| rsx!(
+                        button {
+                            class: if age() == variant { "rounded-md bg-blue-600 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-none active:bg-blue-700 hover:bg-blue-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2" } else { "red" },
+                            onclick: move |_| age.set(variant),
+                            "{variant}"
+                        }
+                    ))}
+                },
+            },
+            "Second Enum: {activity_level()}",
+            button {
+                onclick: move |_| activity_level.set(ActivityLevel::Moderate),
+                "Change Second Enum"
+            },
+            "Number: {weight_kg()}",
+            button {
+                onclick: move |_| weight_kg.set(weight_kg() + 1),
+                "Increment Number"
             }
         }
     }
@@ -95,8 +110,8 @@ fn Navbar() -> Element {
                 "Home"
             }
             Link {
-                to: Route::Blog { id: 1 },
-                "Blog"
+                to: Route::Calculator {},
+                "Nutrient Calculator"
             }
         }
 

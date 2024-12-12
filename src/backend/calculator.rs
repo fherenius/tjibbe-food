@@ -1,6 +1,7 @@
-use super::super::shared::types::{ActivityLevel, Age, Inputs};
+use super::super::shared::types::Inputs;
+use super::nutrients::Intake;
 
 pub struct Calculator {
     inputs: Inputs,
-    nutrient_requirements: 
+    intake: Intake
 }
