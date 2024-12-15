@@ -5,7 +5,8 @@ module.exports = withMT({
   mode: "all",
   content: ["./src/**/*.{rs,html,css}", "./dist/**/*.html"],
   theme: {
-    extend: {},
+    extend: {
+    },
   },
   plugins: [],
 });

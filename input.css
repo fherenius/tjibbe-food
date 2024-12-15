@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.selectable-button {
+  @apply 
+    rounded-md 
+    bg-gradient-to-tr from-slate-800 to-slate-700 
+    py-2 px-4 
+    border border-transparent 
+    text-center text-sm font-medium text-white 
+    transition-colors duration-200 ease-in-out 
+    shadow-md 
+    hover:shadow-lg hover:bg-slate-600 
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 
+    active:bg-slate-800 active:shadow-inner 
+    disabled:opacity-40 disabled:cursor-not-allowed 
+    aria-pressed:bg-slate-600 aria-pressed:opacity-70 aria-pressed:shadow-none;
+}
+
+.calculator-item-header {
+  @apply
+    w-full
+    text-center
+    text-lg
+    font-semibold
+    text-gray-700
+    dark:text-gray-300
+    p-2
+  
+}
