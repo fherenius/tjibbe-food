@@ -1,11 +1,13 @@
 use super::super::shared::types::ActivityLevel;
+use std::fmt;
 
+#[derive(Clone, Default)]
 pub struct MetabolicBodyWeight {
     pub value: Kilogram,
 }
 
 impl MetabolicBodyWeight {
-    fn new(body_weight: Kilogram) -> Self {
+    pub fn new(body_weight: Kilogram) -> Self {
         let metabolic_bw = body_weight.value.powf(0.75);
         return MetabolicBodyWeight {
             value: Kilogram {
@@ -19,7 +21,7 @@ impl MetabolicBodyWeight {
     }
 }
 
-trait NewRecommendedIntake<T> {
+pub trait NewRecommendedIntake<T> {
     fn new_recommended_intake(
         metabolic_bw: &MetabolicBodyWeight,
         activity_level: ActivityLevel,
@@ -30,9 +32,11 @@ trait NewRecommendedNutrientIntake<T> {
     fn new_recommended_nutrient_intake(metabolic_bw: &MetabolicBodyWeight) -> T;
 }
 
+
+#[derive(Clone, Default)]
 pub struct Intake {
-    daily_kcal: Kcal,
-    nutrients: Nutrients,
+    pub daily_kcal: Kcal,
+    pub nutrients: Nutrients,
 }
 
 impl NewRecommendedIntake<Self> for Intake {
@@ -53,13 +57,15 @@ impl NewRecommendedIntake<Self> for Intake {
     }
 }
 
+
+#[derive(Clone, Default)]
 pub struct Nutrients {
-    protein: Gram,
-    fat: Gram,
-    amino_acids: AminoAcids,
-    fatty_acids: FattyAcids,
-    minerals: Minerals,
-    vitamins: Vitamins,
+    pub protein: Gram,
+    pub fat: Gram,
+    pub amino_acids: AminoAcids,
+    pub fatty_acids: FattyAcids,
+    pub minerals: Minerals,
+    pub vitamins: Vitamins,
 }
 
 impl NewRecommendedNutrientIntake<Self> for Nutrients {
@@ -75,19 +81,21 @@ impl NewRecommendedNutrientIntake<Self> for Nutrients {
     }
 }
 
+
+#[derive(Clone, Default)]
 pub struct AminoAcids {
-    arginine: Gram,
-    histidine: Gram,
-    isoleucine: Gram,
-    leucine: Gram,
-    lysine: Gram,
-    methionine: Gram,
-    cystine: Gram,
-    phenylalanine: Gram,
-    tyrosine: Gram,
-    threonine: Gram,
-    tryptophan: Gram,
-    valine: Gram,
+    pub arginine: Gram,
+    pub histidine: Gram,
+    pub isoleucine: Gram,
+    pub leucine: Gram,
+    pub lysine: Gram,
+    pub methionine: Gram,
+    pub cystine: Gram,
+    pub phenylalanine: Gram,
+    pub tyrosine: Gram,
+    pub threonine: Gram,
+    pub tryptophan: Gram,
+    pub valine: Gram,
 }
 
 impl NewRecommendedNutrientIntake<Self> for AminoAcids {
@@ -109,8 +117,31 @@ impl NewRecommendedNutrientIntake<Self> for AminoAcids {
     }
 }
 
+impl<'a> IntoIterator for &'a AminoAcids {
+    type Item = (&'static str, &'a dyn fmt::Display);
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        vec![
+            ("Arginine", &self.arginine as &dyn fmt::Display),
+            ("Histidine", &self.histidine as &dyn fmt::Display),
+            ("Isoleucine", &self.isoleucine as &dyn fmt::Display),
+            ("Leucine", &self.leucine as &dyn fmt::Display),
+            ("Lysine", &self.lysine as &dyn fmt::Display),
+            ("Methionine", &self.methionine as &dyn fmt::Display),
+            ("Cystine", &self.cystine as &dyn fmt::Display),
+            ("Phenylalanine", &self.phenylalanine as &dyn fmt::Display),
+            ("Tyrosine", &self.tyrosine as &dyn fmt::Display),
+            ("Threonine", &self.threonine as &dyn fmt::Display),
+            ("Tryptophan", &self.tryptophan as &dyn fmt::Display),
+            ("Valine", &self.valine as &dyn fmt::Display),
+        ].into_iter()
+    }
+}
+
+#[derive(Clone, Default)]
 pub struct FattyAcids {
-    linoleic_acid: Gram,
+    pub linoleic_acid: Gram,
 }
 
 impl NewRecommendedNutrientIntake<Self> for FattyAcids {
@@ -121,19 +152,31 @@ impl NewRecommendedNutrientIntake<Self> for FattyAcids {
     }
 }
 
+impl<'a> IntoIterator for &'a FattyAcids {
+    type Item = (&'static str, &'a dyn fmt::Display);
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        vec![
+            ("Linoleic Acid", &self.linoleic_acid as &dyn fmt::Display),
+        ].into_iter()
+    }
+}
+
+#[derive(Clone, Default)]
 pub struct Minerals {
-    calcium: Gram,
-    phosphorus: Gram,
-    potassium: Gram,
-    sodium: Gram,
-    chloride: Gram,
-    magnesium: Gram,
-    copper: Milligram,
-    iodine: Milligram,
-    iron: Milligram,
-    manganese: Milligram,
-    selenium: Microgram,
-    zinc: Milligram,
+    pub calcium: Gram,
+    pub phosphorus: Gram,
+    pub potassium: Gram,
+    pub sodium: Gram,
+    pub chloride: Gram,
+    pub magnesium: Gram,
+    pub copper: Milligram,
+    pub iodine: Milligram,
+    pub iron: Milligram,
+    pub manganese: Milligram,
+    pub selenium: Microgram,
+    pub zinc: Milligram,
 }
 
 impl NewRecommendedNutrientIntake<Self> for Minerals {
@@ -155,18 +198,41 @@ impl NewRecommendedNutrientIntake<Self> for Minerals {
     }
 }
 
+impl<'a> IntoIterator for &'a Minerals {
+    type Item = (&'static str, &'a dyn fmt::Display);
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        vec![
+            ("Calcium", &self.calcium as &dyn fmt::Display),
+            ("Phosphorus", &self.phosphorus as &dyn fmt::Display),
+            ("Potassium", &self.potassium as &dyn fmt::Display),
+            ("Sodium", &self.sodium as &dyn fmt::Display),
+            ("Chloride", &self.chloride as &dyn fmt::Display),
+            ("Magnesium", &self.magnesium as &dyn fmt::Display),
+            ("Copper", &self.copper as &dyn fmt::Display),
+            ("Iodine", &self.iodine as &dyn fmt::Display),
+            ("Iron", &self.iron as &dyn fmt::Display),
+            ("Manganese", &self.manganese as &dyn fmt::Display),
+            ("Selenium", &self.selenium as &dyn fmt::Display),
+            ("Zinc", &self.zinc as &dyn fmt::Display),
+        ].into_iter()
+    }
+}
+
+#[derive(Clone, Default)]
 pub struct Vitamins {
-    vit_a: IU,
-    vit_d: IU,
-    vit_e: IU,
-    vit_b1: Milligram,
-    vit_b2: Milligram,
-    vit_b5: Milligram,
-    vit_b6: Milligram,
-    vit_b12: Microgram,
-    vit_b3: Milligram,
-    vit_b9: Microgram,
-    choline: Milligram,
+    pub vit_a: IU,
+    pub vit_d: IU,
+    pub vit_e: IU,
+    pub vit_b1: Milligram,
+    pub vit_b2: Milligram,
+    pub vit_b5: Milligram,
+    pub vit_b6: Milligram,
+    pub vit_b12: Microgram,
+    pub vit_b3: Milligram,
+    pub vit_b9: Microgram,
+    pub choline: Milligram,
 }
 
 impl NewRecommendedNutrientIntake<Self> for Vitamins {
@@ -187,32 +253,89 @@ impl NewRecommendedNutrientIntake<Self> for Vitamins {
     }
 }
 
-trait FromValue {
+impl<'a> IntoIterator for &'a Vitamins {
+    type Item = (&'static str, &'a dyn fmt::Display);
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        vec![
+            ("Vitamin A", &self.vit_a as &dyn fmt::Display),
+            ("Vitamin D", &self.vit_d as &dyn fmt::Display),
+            ("Vitamin E", &self.vit_e as &dyn fmt::Display),
+            ("Vitamin B1", &self.vit_b1 as &dyn fmt::Display),
+            ("Vitamin B2", &self.vit_b2 as &dyn fmt::Display),
+            ("Vitamin B5", &self.vit_b5 as &dyn fmt::Display),
+            ("Vitamin B6", &self.vit_b6 as &dyn fmt::Display),
+            ("Vitamin B12", &self.vit_b12 as &dyn fmt::Display),
+            ("Vitamin B3", &self.vit_b3 as &dyn fmt::Display),
+            ("Vitamin B9", &self.vit_b9 as &dyn fmt::Display),
+            ("Choline", &self.choline as &dyn fmt::Display),
+        ].into_iter()
+    }
+}
+
+pub trait FromValue {
     fn from_value(value: f32) -> Self;
 }
 
+#[derive(Clone, Default)]
 pub struct IU {
     value: f32,
 }
 
+#[derive(Clone, Default)]
 pub struct Kilogram {
     value: f32,
 }
 
+#[derive(Clone, Default)]
 pub struct Gram {
     value: f32,
 }
 
+#[derive(Clone, Default)]
 pub struct Microgram {
     value: f32,
 }
 
+#[derive(Clone, Default)]
 pub struct Milligram {
     value: f32,
 }
 
+#[derive(Clone, Default, Debug)]
 pub struct Kcal {
     value: f32,
+}
+
+impl fmt::Display for Kcal {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} kcal", self.value.round())
+    }
+}
+
+impl fmt::Display for Gram {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:.2} gr", self.value)
+    }
+}
+
+impl fmt::Display for Milligram {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:.2} mg", self.value)
+    }
+}
+
+impl fmt::Display for Microgram {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:.2} µg", self.value)
+    }
+}
+
+impl fmt::Display for IU {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} IU", self.value.round())
+    }
 }
 
 impl FromValue for Kcal {
@@ -224,6 +347,12 @@ impl FromValue for Kcal {
 impl FromValue for IU {
     fn from_value(value: f32) -> Self {
         IU { value }
+    }
+}
+
+impl FromValue for Kilogram {
+    fn from_value(value: f32) -> Self {
+        Kilogram { value }
     }
 }
 

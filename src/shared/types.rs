@@ -1,9 +1,10 @@
 use std::fmt;
 use strum::EnumIter;
 
-#[derive(Debug, PartialEq, Clone, Copy, EnumIter)]
+#[derive(Debug, Default, PartialEq, Clone, Copy, EnumIter)]
 pub enum Age {
     Puppy,
+    #[default]
     Adult,
     Senior,
 }
@@ -14,9 +15,10 @@ impl fmt::Display for Age {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Copy, EnumIter)]
+#[derive(Debug, Default, PartialEq, Clone, Copy, EnumIter)]
 pub enum ActivityLevel {
     Sedentary,
+    #[default]
     Moderate,
     Active,
     High,
@@ -29,8 +31,9 @@ impl fmt::Display for ActivityLevel {
     }
 }
 
+#[derive(Clone, Default, Copy)]
 pub struct Inputs {
-    age: Age,
-    weight: f32,
-    activity_level: ActivityLevel,
+    pub age: Age,
+    pub weight: f32,
+    pub activity_level: ActivityLevel,
 }
