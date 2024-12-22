@@ -87,7 +87,8 @@ http {
     error_log /dev/stderr;
 
     server {
-        listen 8080;
+        listen 8080 default_server;
+        server_name _;  # Catch-all server name
         root   /usr/share/nginx/html;
 
         # Security headers
