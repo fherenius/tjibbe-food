@@ -13,15 +13,16 @@
     .btn-primary {
         @apply btn-base
         bg-gradient-to-tr from-slate-800 to-slate-700
-        hover:shadow-lg hover:bg-slate-700
+        hover:shadow-lg hover:bg-slate-700 hover:scale-105
         focus:bg-slate-700 focus:shadow-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500
-        active:bg-slate-700 active:shadow-none;
+        active:bg-slate-700 active:shadow-none active:scale-95;
     }
 
     .selectable-button {
         @apply btn-primary
         py-2 px-4
-        aria-pressed:bg-slate-600 aria-pressed:opacity-70 aria-pressed:shadow-none;
+        aria-pressed:bg-slate-500 aria-pressed:opacity-90 aria-pressed:shadow-inner 
+        aria-pressed:scale-95 aria-pressed:from-slate-600 aria-pressed:to-slate-500;
     }
 
     .number-control-button {
