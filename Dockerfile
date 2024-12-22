@@ -11,7 +11,6 @@ RUN npm ci
 
 # Copy all source files for Tailwind to scan
 COPY --link tailwind.config.js ./
-COPY --link src ./src
 COPY --link assets ./assets
 
 # Build assets using npx directly

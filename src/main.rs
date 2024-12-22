@@ -122,6 +122,7 @@ fn EnumInputComponent() -> Element {
                                 min: "0",
                                 class: "w-min-0 bg-transparent placeholder:text-slate-400 text-white text-sm border border-slate-200 rounded-md pl-3 pr-20 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                                 id: "weightInput",
+                                oninput: move |event| weight_kg.set(event.parsed::<u32>().unwrap_or(0))
                             }
                             button {
                                 r#type: "button",
