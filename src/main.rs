@@ -56,7 +56,6 @@ pub fn Calculator() -> Element {
         div { id: "calculator",
 
             // Content
-            h1 { "This is a calculator" }
             EnumInputComponent {}
         }
     }
@@ -78,30 +77,34 @@ fn EnumInputComponent() -> Element {
     });
 
     rsx! {
-        div { class: "w-[60%] container mx-auto px-4 py-8",
-            ul { class: "w-[60%] mx-auto relative flex flex-wrap px-2 py-2 list-none rounded-md bg-gray-200 dark:bg-gray-800 shadow-md",
-                div { class: "calculator-item-header", "Select Age" }
-                li { class: "z-30 flex-auto text-center m-1",
-                    {Age::iter().map(|variant| rsx! {
-                        button {
-                            class: "selectable-button",
-                            aria_pressed: if age() == variant { false } else { true },
-                            onclick: move |_| age.set(variant),
-                            "{variant}"
-                        }
-                    })}
-                }
-                div { class: "calculator-item-header", "Select Activity Level" }
-                li { class: "z-30 flex-auto text-center m-1",
-                    {ActivityLevel::iter().map(|variant| rsx! {
-                        button {
-                            class: "selectable-button",
-                            aria_pressed: if activity_level() == variant { false } else { true },
-                            onclick: move |_| activity_level.set(variant),
-                            "{variant}"
-                        }
-                    })}
-                }
+        div { class: "container w-[70%] mx-auto px-4 py-8",
+            // Calculator inputs section
+            ul { class: "w-[70%] mx-auto flex flex-wrap p-2 rounded-md bg-gray-200 dark:bg-gray-800 shadow-md",
+                // Age and Activity Level sections use the same pattern
+                    div { class: "calculator-item-header", "Select Age" }
+                    li { class: "z-30 flex-auto text-center m-1",
+                        {Age::iter().map(|variant| rsx! {
+                            button {
+                                class: "selectable-button",
+                                aria_pressed: if age() == variant { false } else { true },
+                                onclick: move |_| age.set(variant),
+                                "{variant}"
+                            }
+                        })}
+                    }
+                    div { class: "calculator-item-header", "Select Activity Level" }
+                    li { class: "z-30 flex-auto text-center m-1",
+                        {ActivityLevel::iter().map(|variant| rsx! {
+                            button {
+                                class: "selectable-button",
+                                aria_pressed: if activity_level() == variant { false } else { true },
+                                onclick: move |_| activity_level.set(variant),
+                                "{variant}"
+                            }
+                        })}
+                    }
+
+                // Weight input section
                 div { class: "calculator-item-header", "Select Weight (kg)" }
                 li { class: "z-30 flex-auto text-center m-1",
                     div { class: "flex justify-center text-center m-1",
@@ -131,65 +134,96 @@ fn EnumInputComponent() -> Element {
                     }
                 }
             }
-        }
-        div {
-            h1 { class: "text-2xl font-bold text-center mb-6", "Nutrient Intake" }
-            table { class: "w-[60%] mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden",
-                thead { class: "bg-gray-100 dark:bg-gray-700",
-                    tr {
-                        th { class: "px-6 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-200 uppercase tracking-wider", "Category" }
-                        th { class: "px-6 py-3 text-left text-sm font-semibold text-gray-600 dark:text-gray-200 uppercase tracking-wider", "Value" }
-                    }
-                }
-                tbody { class: "divide-y divide-gray-200 dark:divide-gray-700",
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "Daily Calories" }
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{intake().daily_kcal}" }
-                    }
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "Protein" }
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{intake().nutrients.protein}" }
-                    }
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "Fat" }
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{intake().nutrients.fat}" }
-                    }
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900", colspan: "2", "Amino Acids" }
-                    }
-                    {(intake().nutrients.amino_acids).into_iter().map(|(name, value)| rsx!(
+
+            // Results table section
+            div { class: "mt-4",
+                h1 { class: "text-2xl font-bold text-center mb-6", "Nutrient Intake" }
+                table { class: "w-[80%] mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden",
+                    thead { class: "bg-gray-100 dark:bg-gray-700",
                         tr {
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "{name}" }
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{value}" }
+                            th { class: "table-header w-1/2", "Category" }
+                            th { class: "table-header w-1/2 text-right", "Value" }
                         }
-                    ))}
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900", colspan: "2", "Fatty Acids" }
                     }
-                    {(&intake().nutrients.fatty_acids).into_iter().map(|(name, value)| rsx!(
-                        tr {
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "{name}" }
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{value}" }
+                    tbody { class: "divide-y divide-gray-200 dark:divide-gray-700",
+                        // Main nutrients section
+                        tr { class: "table-row-alt",
+                            td { class: "table-cell-label w-1/2", "Daily Calories" }
+                            td { class: "table-cell-value w-1/2 text-right", "{intake().daily_kcal}" }
                         }
-                    ))} 
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900", colspan: "2", "Minerals" }
+                        tr { class: "table-row-alt",
+                            td { class: "table-cell-label w-1/2", "Protein" }
+                            td { class: "table-cell-value w-1/2 text-right", "{intake().nutrients.protein}" }
+                        }
+                        tr { class: "table-row-alt",
+                            td { class: "table-cell-label w-1/2", "Fat" }
+                            td { class: "table-cell-value w-1/2 text-right", "{intake().nutrients.fat}" }
+                        }
+
+                        // Amino Acids section
+                        tr {
+                            td { class: "table-section-header", colspan: "2", "Amino Acids" }
+                        }
+                        {
+                            let current_intake = intake();
+                            rsx!({
+                                (&current_intake.nutrients.amino_acids).into_iter().map(|(name, value)| rsx!(
+                                    tr { class: "table-row-alt",
+                                        td { class: "table-cell-label w-1/2", "{name}" }
+                                        td { class: "table-cell-value w-1/2 text-right", "{value}" }
+                                    }
+                                ))
+                            })
+                        }
+
+                        // Fatty Acids section
+                        tr {
+                            td { class: "table-section-header", colspan: "2", "Fatty Acids" }
+                        }
+                        {
+                            let current_intake = intake();
+                            rsx!({
+                                (&current_intake.nutrients.fatty_acids).into_iter().map(|(name, value)| rsx!(
+                                    tr { 
+                                        td { class: "table-cell-label w-1/2", "{name}" }
+                                        td { class: "table-cell-value w-1/2 text-right", "{value}" }
+                                    }
+                                ))
+                            })
+                        }
+
+                        // Minerals section
+                        tr {
+                            td { class: "table-section-header", colspan: "2", "Minerals" }
+                        }
+                        {
+                            let current_intake = intake();
+                            rsx!({
+                                (&current_intake.nutrients.minerals).into_iter().map(|(name, value)| rsx!(
+                                    tr {class: "table-row-alt",
+                                        td { class: "table-cell-label w-1/2", "{name}" }
+                                        td { class: "table-cell-value w-1/2 text-right", "{value}" }
+                                    }
+                                ))
+                            })
+                        }
+
+                        // Vitamins section
+                        tr {
+                            td { class: "table-section-header", colspan: "2", "Vitamins" }
+                        }
+                        {
+                            let current_intake = intake();
+                            rsx!({
+                                (current_intake.nutrients.vitamins).into_iter().map(|(name, value)| rsx!(
+                                    tr { class: "table-row-alt",
+                                        td { class: "table-cell-label w-1/2", "{name}" }
+                                        td { class: "table-cell-value w-1/2 text-right", "{value}" }
+                                    }
+                                ))
+                            })
+                        }
                     }
-                    {(&intake().nutrients.minerals).into_iter().map(|(name, value)| rsx!(
-                        tr {
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "{name}" }
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{value}" }
-                        }
-                    ))}
-                    tr {
-                        td { class: "px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-900", colspan: "2", "Vitamins" }
-                    }
-                    {(intake().nutrients.vitamins).into_iter().map(|(name, value)| rsx!(
-                        tr {
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white", "{name}" }
-                            td { class: "px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300", "{value}" }
-                        }
-                    ))}
                 }
             }
         }

@@ -1,3 +1,22 @@
+# Add new stage for asset compilation
+FROM node:20-slim AS asset-builder
+
+WORKDIR /usr/src/app
+
+# Copy package files first for better caching
+COPY --link package.json package-lock.json ./
+
+# Install dependencies using the lock file
+RUN npm ci
+
+# Copy all source files for Tailwind to scan
+COPY --link tailwind.config.js ./
+COPY --link src ./src
+COPY --link assets ./assets
+
+# Build assets using npx directly
+RUN npx tailwindcss -i ./assets/tailwind.css -o ./assets/output.css --minify
+
 # Build stage
 FROM rust:1.82-slim AS builder
 
@@ -6,46 +25,37 @@ RUN rustup update nightly && \
     rustup default nightly && \
     apt-get update && \
     apt-get install -y pkg-config libssl-dev && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    # Install WebAssembly target
+    rustup target add wasm32-unknown-unknown && \
+    # Install Dioxus CLI instead of trunk
+    cargo install dioxus-cli
 
-# Create a new empty shell project
+# Create working directory
 WORKDIR /usr/src/app
 
-# Copy only the files needed for build
+# Copy only dependency files first
 COPY --link Cargo.toml Cargo.lock ./
 
-# Fetch dependencies and create a dummy build to cache dependencies
-RUN cargo fetch && \
-    mkdir src && \
-    echo 'fn main() {}' > src/main.rs && \
-    cargo build --release --features tui && \
-    rm -rf src/*.rs target/release/deps/nutrient_calculator*
+# Create a dummy src/main.rs to build dependencies
+RUN mkdir src && \
+    echo "fn main() {}" > src/main.rs && \
+    dx build --release && \
+    rm -rf src
 
+# Now copy the real source code and assets
 COPY --link src ./src
+COPY --from=asset-builder /usr/src/app/assets ./assets
+COPY --link Dioxus.toml ./Dioxus.toml
 
-# Build with specified features (default to tui if not specified)
-ARG FEATURES=tui
-RUN cargo build --release --features ${FEATURES}
+# Build the actual application
+RUN dx build --release
 
-FROM debian:bookworm-slim
+# Use official non-root nginx image
+FROM nginxinc/nginx-unprivileged:alpine-slim
 
-# Install required shared libraries
-RUN apt-get update && apt-get install -y \
-    libssl3 \
-    ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+# Copy the built static files
+COPY --from=builder /usr/src/app/target/dx/nutrient_calculator/release/web/public /usr/share/nginx/html
 
-# Create a non-root user and group named nonroot
-RUN groupadd -r nonroot && useradd --no-log-init -r -g nonroot nonroot
-
-# Use nonroot user
-USER nonroot:nonroot
-
-# Copy only the binary using --link for better layer caching
-COPY --link --chmod=555 --chown=nonroot:nonroot --from=builder /usr/src/app/target/release/nutrient_calculator /usr/local/bin/
-
-# Specify that this is a tui app that needs a terminal
-ENV TERM=xterm-256color
-
-# Set the entrypoint
-CMD ["/usr/local/bin/nutrient_calculator"]
+EXPOSE 8080
+CMD ["nginx", "-g", "daemon off;"]

@@ -2,30 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
-.selectable-button {
-  @apply 
-    rounded-md 
-    bg-gradient-to-tr from-slate-800 to-slate-700 
-    py-2 px-4 
-    border border-transparent 
-    text-center text-sm font-medium text-white 
-    transition-colors duration-200 ease-in-out 
-    shadow-md 
-    hover:shadow-lg hover:bg-slate-600 
-    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 
-    active:bg-slate-800 active:shadow-inner 
-    disabled:opacity-40 disabled:cursor-not-allowed 
-    aria-pressed:bg-slate-600 aria-pressed:opacity-70 aria-pressed:shadow-none;
-}
+@layer components {
+    /* Button Styles */
+    .btn-base {
+        @apply rounded-md border border-transparent text-center text-sm text-white
+        transition-all duration-200 ease-in-out shadow-md
+        disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none;
+    }
 
-.calculator-item-header {
-  @apply
-    w-full
-    text-center
-    text-lg
-    font-semibold
-    text-gray-700
-    dark:text-gray-300
-    p-2
-  
+    .btn-primary {
+        @apply btn-base
+        bg-gradient-to-tr from-slate-800 to-slate-700
+        hover:shadow-lg hover:bg-slate-700
+        focus:bg-slate-700 focus:shadow-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500
+        active:bg-slate-700 active:shadow-none;
+    }
+
+    .selectable-button {
+        @apply btn-primary
+        py-2 px-4
+        aria-pressed:bg-slate-600 aria-pressed:opacity-70 aria-pressed:shadow-none;
+    }
+
+    .number-control-button {
+        @apply btn-base
+        absolute top-1 bg-slate-800 p-1.5
+        hover:shadow hover:bg-slate-700
+        focus:bg-slate-700 focus:shadow-none
+        active:bg-slate-700 active:shadow-none;
+    }
+
+    /* Input Styles */
+    .number-input {
+        @apply min-w-[120px] bg-transparent text-white text-sm rounded-md pl-3 pr-20 py-2
+        border border-slate-200 hover:border-slate-300 focus:border-slate-400
+        transition duration-300 ease-in-out focus:outline-none shadow-sm focus:shadow
+        appearance-none [&::-webkit-outer-spin-button]:appearance-none
+        [&::-webkit-inner-spin-button]:appearance-none;
+    }
+
+    /* Layout Components */
+    .calculator-item-header {
+        @apply w-full text-center text-lg font-semibold
+        text-gray-700 dark:text-gray-300 p-2;
+    }
+
+    /* Table Styles */
+    .table-row-alt {
+        @apply even:bg-gray-50 even:dark:bg-gray-900/50;
+    }
+
+    .table-section {
+        @apply space-y-1;
+    }
+
+    .table-header {
+        @apply px-6 py-3 text-left text-sm font-semibold 
+        text-gray-600 dark:text-gray-200 uppercase tracking-wider;
+    }
+
+    .table-cell {
+        @apply px-6 py-4 whitespace-nowrap text-sm;
+    }
+
+    .table-cell-label {
+        @apply table-cell font-medium text-gray-900 dark:text-white;
+    }
+
+    .table-cell-value {
+        @apply table-cell text-gray-500 dark:text-gray-300;
+    }
+
+    .table-section-header {
+        @apply table-cell-label font-bold bg-gray-50 dark:bg-gray-900;
+    }
 }
