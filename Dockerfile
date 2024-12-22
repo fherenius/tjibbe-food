@@ -55,7 +55,7 @@ RUN dx build --release
 FROM nginxinc/nginx-unprivileged:alpine-slim
 
 # Create nginx.conf first
-COPY <<EOF /tmp/nginx.conf
+COPY <<'EOF' /tmp/nginx.conf
 worker_processes auto;
 pid /tmp/nginx.pid;
 
